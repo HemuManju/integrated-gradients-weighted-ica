@@ -14,21 +14,29 @@ config = yaml.load(open(str(config_path)), Loader=yaml.SafeLoader)
 
 with skip_run('skip', 'Run Fast ICA') as check, check():
     size = [2, 500]
-    unmixed, mixed, mixing_mat = get_mixed_signals(size)
+    unmixed, mixed = get_mixed_signals(size)
 
     # Unmix them with fast ICA
-    unmixed_fastica, mixing_fastica = fit_fast_ica(mixed.T)
-    plt.plot(unmixed_fastica, label='Recovered')
-    plt.plot(unmixed.T, '--', label='True sources')
-    plt.legend()
+    recovered, mixing_fastica = fit_fast_ica(mixed.T)
+    fig, ax = plt.subplots(nrows=3, ncols=1)
+    for i in range(3):
+        ax[i].plot(unmixed[i, :], label='Recovered')
+
+    fig, ax = plt.subplots(nrows=3, ncols=1)
+    for i in range(3):
+        ax[i].plot(recovered[:, i], label='Recovered')
     plt.show()
 
 with skip_run('run', 'Run Weighted ICA') as check, check():
-    size = [2, 500]
-    unmixed, mixed, mixing_mat = get_mixed_signals(size)
+    size = [3, 500]
+    unmixed, mixed = get_mixed_signals(size)
 
-    W, recovered, _ = fit_weighted_ica(mixed, n=10)
-    plt.plot(recovered.T, label='Recovered')
-    plt.plot(unmixed.T, '--', label='True sources')
-    plt.legend()
+    W, recovered = fit_weighted_ica(mixed, n=500)
+    fig, ax = plt.subplots(nrows=3, ncols=1)
+    for i in range(3):
+        ax[i].plot(unmixed[i, :], label='True sources')
+
+    fig, ax = plt.subplots(nrows=3, ncols=1)
+    for i in range(3):
+        ax[i].plot(recovered[i, :], label='Recovered')
     plt.show()

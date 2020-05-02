@@ -1,48 +1,49 @@
 import numpy as np
-from sklearn.decomposition import FastICA
 
-from pyriemann.estimation import Covariances
+from sklearn.decomposition import FastICA
+from sklearn.covariance import oas
+
 from pyriemann.utils.ajd import ajd_pham
 
 
 def fit_fast_ica(signal):
-    ica = FastICA(n_components=2, whiten=True)
+    ica = FastICA(n_components=3, whiten=True)
     S_ = ica.fit_transform(signal)  # Reconstruct signals
     A_ = ica.mixing_
 
-    assert np.allclose(signal,
-                       np.dot(S_, A_.T) + ica.mean_), 'Sources are not close'
+    # assert np.allclose(signal,
+    #                    np.dot(S_, A_.T) + ica.mean_), 'Sources are not close'
     return S_, A_
 
 
 def fit_weighted_ica(signal, n):
     covariance_set = np.empty((n, signal.shape[0], signal.shape[0]))
-    cov = Covariances(estimator='oas')
+    signal_cov, _ = oas(signal.T, assume_centered=True)
 
-    # Whiten the signal
+    # Sample and find the covariance matrix
     for i in range(n):
-        index = np.random.choice(signal.shape[1],
-                                 signal.shape[1],
-                                 replace=False)
+        index = np.random.choice(signal.shape[1], 1, replace=False)
+
         # Weights
-        weight = np.random.rand(signal.shape[1])
-        m_signal = np.average(signal[:, index], weights=weight, axis=-1)
+        sample = signal[:, index]
+        weight = np.random.multivariate_normal(mean=sample.ravel(),
+                                               cov=signal_cov,
+                                               size=signal.shape[1]).T
+        m_signal = np.average(signal, weights=weight, axis=-1)  # weighted mean
 
         # Center the signal
-        temp = (signal[:, index] - m_signal[:, np.newaxis]) * np.sqrt(weight)
-        epoch = np.expand_dims(temp, axis=0)
+        centered_signal = (signal - m_signal[:, np.newaxis])
 
         # Take the weighted covariance
-        covariance_set[i, :, :] = cov.fit_transform(epoch) / np.sum(weight)
+        covariance_set[i, :, :] = np.dot(centered_signal * weight,
+                                         centered_signal.T) / np.sum(weight,
+                                                                     axis=-1)
 
     # Get the best estimate of the diagonalization
-    W, D = ajd_pham(covariance_set)
+    V, D = ajd_pham(covariance_set)
+    V = V / np.max(V)
 
     # Recovered signal
-    recovered = np.matmul(W.T, signal)
+    recovered = np.dot(V, signal - signal.mean(axis=-1)[:, np.newaxis])
 
-    # Mixed signal
-    mixed = np.matmul(np.linalg.pinv(W.T), recovered)
-    assert np.allclose(signal, mixed), 'Sources are not close'
-
-    return W, recovered, mixed
+    return V, recovered

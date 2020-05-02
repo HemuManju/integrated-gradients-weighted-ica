@@ -1,18 +1,19 @@
 import numpy as np
+from scipy import signal
 
 
 def get_mixed_signals(size):
-    time = np.linspace(0, 5, num=size[1])
-    s1 = np.sin(2 * time)  # Signal 1 : sinusoidal signal
-    s2 = np.sign(np.sin(3 * time))  # Signal 2 : square signal
+    ns = np.linspace(0, 100, size[1])
+    # Sources with (1) sine wave, (2) saw tooth and (3) random noise
+    S = np.array([
+        np.sin(ns * 1) + 1,
+        signal.sawtooth(ns * 1) + 1,
+        np.random.random(len(ns))
+    ])
 
-    S = np.c_[s1, s2]
-    S += 0.05 * np.random.normal(size=S.shape)  # Add noise
-    S /= S.std(axis=0)
-    # Unmixed signal
-    unmixed = S.T
+    # Quadratic mixing matrix
+    A = np.array([[0.5, 1, 0.2], [1, 0.5, 0.4], [0.5, 0.8, 1]])
 
-    # Mixed signal and mixing matrix
-    mixing_mat = np.random.rand(size[0], size[0])
-    mixed = np.matmul(mixing_mat, unmixed)
-    return unmixed, mixed, mixing_mat
+    # Mixed signal matrix
+    X = A.dot(S)
+    return S, X
