@@ -31,7 +31,7 @@ with skip_run('run', 'Run Weighted ICA') as check, check():
     size = [3, 500]
     unmixed, mixed = get_mixed_signals(size)
 
-    W, recovered = fit_weighted_ica(mixed, n=500)
+    W, recovered = fit_weighted_ica(mixed, n=100)
     fig, ax = plt.subplots(nrows=3, ncols=1)
     for i in range(3):
         ax[i].plot(unmixed[i, :], label='True sources')
