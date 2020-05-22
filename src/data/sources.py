@@ -6,9 +6,8 @@ def get_mixed_signals(size):
     ns = np.linspace(0, 100, size[1])
     # Sources with (1) sine wave, (2) saw tooth and (3) random noise
     S = np.array([
-        np.sin(ns * 1) + 1,
-        signal.sawtooth(ns * 1) + 1,
-        np.random.random(len(ns))
+        0.5 * np.sin(ns * 0.5), 0.5 * signal.sawtooth(ns * 0.5),
+        4 * np.random.random(len(ns)) - 2
     ])
 
     # Quadratic mixing matrix

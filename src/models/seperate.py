@@ -22,28 +22,27 @@ def fit_weighted_ica(signal, n):
 
     # Sample and find the covariance matrix
     for i in range(n):
-        index = np.random.choice(signal.shape[1], 1, replace=False)
+        index = np.random.choice(signal.shape[1], 1, replace=True)
 
         # Weights
         sample = signal[:, index]
         weight = np.random.multivariate_normal(mean=sample.ravel(),
                                                cov=signal_cov,
                                                size=signal.shape[1]).T
+        weight = (weight - weight.min()) / (weight - weight.min()).sum()
         m_signal = np.average(signal, weights=weight, axis=-1)  # weighted mean
 
         # Center the signal
         centered_signal = (signal - m_signal[:, np.newaxis])
 
         # Take the weighted covariance
-        covariance_set[i, :, :] = np.dot(centered_signal * weight,
-                                         centered_signal.T) / np.sum(weight,
-                                                                     axis=-1)
+        cov = np.dot(centered_signal * weight, centered_signal.T)
+        covariance_set[i, :, :] = 0.5 * (cov + cov.T)
 
     # Get the best estimate of the diagonalization
     V, D = ajd_pham(covariance_set)
-    V = V / np.max(V)
 
     # Recovered signal
-    recovered = np.dot(V, signal - signal.mean(axis=-1)[:, np.newaxis])
+    recovered = np.dot(V, signal)
 
     return V, recovered
