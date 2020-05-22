@@ -12,7 +12,7 @@ from utils import skip_run
 config_path = Path(__file__).parents[1] / 'src/config.yml'
 config = yaml.load(open(str(config_path)), Loader=yaml.SafeLoader)
 
-with skip_run('run', 'Run Fast ICA') as check, check():
+with skip_run('skip', 'Run Fast ICA') as check, check():
     size = [2, 500]
     unmixed, mixed = get_mixed_signals(size)
 
@@ -31,7 +31,7 @@ with skip_run('run', 'Run Weighted ICA') as check, check():
     size = [3, 500]
     unmixed, mixed = get_mixed_signals(size)
 
-    W, recovered = fit_weighted_ica(mixed, n=50)
+    W, recovered = fit_weighted_ica(mixed, n=100)
     fig, ax = plt.subplots(nrows=3, ncols=1)
     for i in range(3):
         ax[i].plot(mixed[i, :], label='True sources')
