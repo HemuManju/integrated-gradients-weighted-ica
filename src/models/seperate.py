@@ -18,7 +18,7 @@ def compute_weight(signal, power):
     dim = signal.shape[0]
     n_samples = dim
 
-    idx = np.random.randint(low=0, high=signal.shape[1], size=3)
+    idx = np.random.randint(low=0, high=signal.shape[1], size=1)
     sampled_points = signal[:, idx].reshape(n_samples, -1)
 
     # Mean and covariance
@@ -46,6 +46,7 @@ def fit_weighted_ica(signal, n):
         covariance_set[i, :, :] = np.dot(centered_signal * weight,
                                          centered_signal.T) / np.sum(weight,
                                                                      axis=-1)
+        print(covariance_set[i, :, :])
 
     # Get the best estimate of the diagonalization
     V, D = ajd_pham(covariance_set)

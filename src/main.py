@@ -4,6 +4,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 from data.sources import get_mixed_signals
+from data.create_dataset import create_erp_dataset
+from data.utils import save_dataset
 from models.seperate import fit_fast_ica, fit_weighted_ica
 
 from utils import skip_run
@@ -20,14 +22,14 @@ with skip_run('skip', 'Run Fast ICA') as check, check():
     recovered, mixing_fastica = fit_fast_ica(mixed.T)
     fig, ax = plt.subplots(nrows=3, ncols=1)
     for i in range(3):
-        ax[i].plot(mixed[i, :], label='Recovered')
+        ax[i].plot(unmixed[i, :], label='Recovered')
 
     fig, ax = plt.subplots(nrows=3, ncols=1)
     for i in range(3):
         ax[i].plot(recovered[:, i], label='Recovered')
     # plt.show()
 
-with skip_run('run', 'Run Weighted ICA') as check, check():
+with skip_run('skip', 'Run Weighted ICA') as check, check():
     size = [3, 500]
     unmixed, mixed = get_mixed_signals(size)
 
@@ -40,3 +42,7 @@ with skip_run('run', 'Run Weighted ICA') as check, check():
     for i in range(3):
         ax[i].plot(recovered[i, :], label='Recovered')
     plt.show()
+
+with skip_run('skip', 'Create ERP dataset') as check, check():
+    erp_dataset = create_erp_dataset(config)
+    save_dataset(config['erp_dataset_path'], erp_dataset, save=True)
