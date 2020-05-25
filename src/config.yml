@@ -1,4 +1,26 @@
-subjects: [2, 3, 4, 5, 6, 7]
+# EEG data parameters
+sfreq: 256
+epoch_length: 1
+n_electrodes: 32
 
+##---------------------------------------------------------------------##
+# Experiment 0
+# All subjects are used for training and testing
+
+subjects: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+session: 'session_1' # 'session_2', 'session_3'
+
+# Paths
 raw_data_path: 'data/external/'
-erp_dataset_path: 'data/processed/erp_dataset_exp_0_dataframe.h5'
+erp_dataset_path: 'data/processed/erp_dataset_exp_0_dataframe.hkl'
+
+# Trained model save path
+trained_model_path: 'trained_models/experiment_0'
+
+# Neural network parameters
+OUTPUT: 2 # target and non-target
+NUM_EPOCHS: 75
+BATCH_SIZE: 64
+LEARNING_RATE: 0.001
+TEST_SIZE: 0.15
+DROP_OUT: 0.25

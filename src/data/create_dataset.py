@@ -74,6 +74,7 @@ def create_erp_dataset(config):
 
     """
     erp_dataset = nested_dict()
+
     # NOTE: that subject 31 at session 3 has a few samples which are 'nan'
     # to avoid this problem I dropped the epochs having this condition
 
@@ -100,9 +101,14 @@ def create_erp_dataset(config):
                                 verbose=False,
                                 preload=True)
             epochs.pick_types(eeg=True)
-            labels = epochs.events[:, -1] - 1
+            epochs_resampled = epochs.copy().resample(256, npad='auto')
+            tmp_labels = epochs_resampled.events[:, -1] - 1
 
-            erp_dataset[subject][session]['epochs'] = epochs
-            erp_dataset[subject][session]['labels'] = labels
+            labels = np.zeros((tmp_labels.size, tmp_labels.max() + 1))
+            labels[np.arange(tmp_labels.size), tmp_labels] = 1
+
+            sub_id = 'subject_' + str(subject)
+            erp_dataset[sub_id][session]['epochs'] = epochs_resampled
+            erp_dataset[sub_id][session]['labels'] = labels
 
     return erp_dataset
