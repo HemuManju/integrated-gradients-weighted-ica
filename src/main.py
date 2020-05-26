@@ -5,16 +5,18 @@ import matplotlib.pyplot as plt
 
 from data.sources import get_mixed_signals
 from data.create_dataset import create_erp_dataset
-from data.utils import save_dataset
+from data.utils import save_dataset, read_dataset
 
 from datasets.torch_dataset import subject_independent_data
 
-from models.seperate import fit_fast_ica, fit_weighted_ica
+from models.separate import fit_fast_ica, fit_weighted_ica, ig_weighted_ica
 from models.networks import ShallowERPNet
 from models.train import train_torch_model
-from models.interpret import compute_attribution
+from models.interpret import compute_attributions
 from models.utils import (save_trained_pytorch_model,
                           load_trained_pytorch_model)
+
+from visualization.visualize import visualize_seperated_epochs
 
 from utils import skip_run
 
@@ -68,7 +70,13 @@ with skip_run('skip', 'Torch model for ERP classification') as check, check():
                                save_path,
                                save_model=True)
 
-with skip_run('run', 'Explainability') as check, check():
+with skip_run('skip', 'Explainability') as check, check():
     data_iterator = subject_independent_data(config)
     trained_model = load_trained_pytorch_model('experiment_0', 1)
-    compute_attribution(trained_model, data_iterator)
+    attributes = compute_attributions(trained_model, data_iterator)
+    save_dataset(config['attributes_path'], attributes, save=True)
+
+with skip_run('run', 'Source separation without IG') as check, check():
+    results = read_dataset(config['attributes_path'])
+    V = ig_weighted_ica(results['epochs'])
+    visualize_seperated_epochs(results, V)

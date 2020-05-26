@@ -33,7 +33,7 @@ class ShallowERPNet(nn.Module):
             nn.Conv2d(2, OUTPUT, kernel_size=(1, 8), stride=1, bias=True))
 
     def forward(self, x):
-        x = x[:, None, :, :] / 10  # Add the extra dimension
+        x = x[:, None, :, :]  # Add the extra dimension
         out = self.net_1(x)
 
         out = out * out

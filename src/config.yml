@@ -12,10 +12,11 @@ session: 'session_1' # 'session_2', 'session_3'
 
 # Paths
 raw_data_path: 'data/external/'
-erp_dataset_path: 'data/processed/erp_dataset_exp_0_dataframe.hkl'
+erp_dataset_path: 'data/processed/erp_dataset_exp_0_dataset.h5'
 
 # Trained model save path
 trained_model_path: 'trained_models/experiment_0'
+attributes_path: 'data/processed/attributes_exp_0_dataset.h5'
 
 # Neural network parameters
 OUTPUT: 2 # target and non-target

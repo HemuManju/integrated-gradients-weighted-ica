@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.stats import multivariate_normal
 
+import mne
+
 from sklearn.decomposition import FastICA
 from sklearn.covariance import oas
 
@@ -46,8 +48,6 @@ def fit_weighted_ica(signal, n):
         covariance_set[i, :, :] = np.dot(centered_signal * weight,
                                          centered_signal.T) / np.sum(weight,
                                                                      axis=-1)
-        print(covariance_set[i, :, :])
-
     # Get the best estimate of the diagonalization
     V, D = ajd_pham(covariance_set)
 
@@ -55,3 +55,25 @@ def fit_weighted_ica(signal, n):
     recovered = np.dot(V, signal)  # - signal.mean(axis=-1)[:, np.newaxis])
 
     return V, recovered
+
+
+def ig_weighted_ica(epochs):
+    n_epochs = epochs.shape[0]
+    dim = epochs.shape[1]
+    covariance_set = np.empty((n_epochs, dim, dim))
+    # Sample and find the covariance matrix
+    for i, epoch in enumerate(epochs):
+        # Weights
+        weight = compute_weight(epoch, power=2)
+        m_signal = np.average(epoch, weights=weight, axis=-1)  # weighted mean
+
+        # Center the signal
+        centered_signal = (epoch - m_signal[:, np.newaxis])
+
+        # Take the weighted covariance
+        covariance_set[i, :, :] = np.dot(centered_signal * weight,
+                                         centered_signal.T) / np.sum(weight,
+                                                                     axis=-1)
+    # Get the best estimate of the diagonalization
+    V, D = ajd_pham(covariance_set)
+    return V
