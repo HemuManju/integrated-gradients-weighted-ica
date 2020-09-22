@@ -4,7 +4,7 @@ import mne
 import matplotlib.pyplot as plt
 
 
-def visualize_seperated_epochs(results, V):
+def visualize_seperated_epochs(results, V, title):
     epochs = results['epochs']
     labels = results['labels']
 
@@ -25,26 +25,28 @@ def visualize_seperated_epochs(results, V):
         'P3', 'Pz', 'P4', 'P8', 'PO7', 'O1', 'Oz', 'O2', 'PO8', 'PO9', 'PO10'
     ]
     ch_types = ['eeg'] * 32
-    sfreq = 256  #epochs.shape[2]
+    sfreq = epochs.shape[2]
     info = mne.create_info(ch_names=ch_names, sfreq=sfreq, ch_types=ch_types)
     chname2idx = {}
     for i, chn in enumerate(ch_names):
         chname2idx[chn] = i
 
     # Non target and target epochs
-    non_target_epochs = mne.EpochsArray(non_target, info=info)
-    target_epochs = mne.EpochsArray(target, info=info)
+    non_target_epochs = mne.EpochsArray(non_target, info=info, verbose=False)
+    target_epochs = mne.EpochsArray(target, info=info, verbose=False)
 
     # Evoked plot
     plt.style.use('clean')
-    fig, ax = plt.subplots(facecolor='white', figsize=(10.9, 7.6))
+    fig, ax = plt.subplots(figsize=(12, 4))
+
     evkTarget = target_epochs.average().data[chname2idx['Cz'], :]
     evkNonTarget = non_target_epochs.average().data[chname2idx['Cz'], :]
 
     t = np.arange(len(evkTarget)) / target_epochs.info['sfreq']
     ax.plot(t, evkTarget, label='Target')
     ax.plot(t, evkNonTarget, label='NonTarget')
-    plt.show()
+    ax.legend()
+    ax.set_title(title)
 
     # # Visualize
     # mne.viz.plot_epochs_image(target_epochs, picks='Cz', show=False)

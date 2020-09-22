@@ -76,7 +76,14 @@ with skip_run('skip', 'Explainability') as check, check():
     attributes = compute_attributions(trained_model, data_iterator)
     save_dataset(config['attributes_path'], attributes, save=True)
 
-with skip_run('run', 'Source separation without IG') as check, check():
+with skip_run('skip', 'Source separation without IG') as check, check():
     results = read_dataset(config['attributes_path'])
-    V = ig_weighted_ica(results['epochs'])
-    visualize_seperated_epochs(results, V)
+    V_without_ig = ig_weighted_ica(results['epochs'])
+    visualize_seperated_epochs(results, V_without_ig, 'Without IG')
+    plt.show()
+
+with skip_run('skip', 'Source separation with IG') as check, check():
+    results = read_dataset(config['attributes_path'])
+    V = ig_weighted_ica(results['epochs'], results['attributions'])
+    visualize_seperated_epochs(results, V, 'With IG')
+    plt.show()

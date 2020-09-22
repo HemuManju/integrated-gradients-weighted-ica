@@ -3,7 +3,6 @@ import numpy as np
 import torch
 
 from captum.attr import IntegratedGradients
-# import matplotlib.pyplot as plt
 
 
 def compute_attributions(trained_model, data_iterator):
