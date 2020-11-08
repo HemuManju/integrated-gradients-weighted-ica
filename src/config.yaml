@@ -1,0 +1,75 @@
+# EEG data parameters
+epoch_length: 1
+overlap: 0.5
+n_freqs: 6
+n_electrodes: 20
+s_freq: 256
+n_class: 3
+freq_bands: [[4, 7], [8, 10], [11, 13], [14, 22], [23, 35], [35, 45]]
+band_names:
+  ['theta', 'lower_alpha', 'higher_alpha', 'lower_beta', 'higher_beta', 'gamma']
+n_classes: 2
+SCALE_FACTOR: 1
+##---------------------------------------------------------------------##
+# Neural network parameters
+OUTPUT: 2
+REG_OUTPUT: 1
+NUM_EPOCHS: 200
+BATCH_SIZE: 64
+LEARNING_RATE: 0.001
+DROP_OUT: 0.20
+TEST_SIZE: 0.30
+VALID_SIZE: 0
+##---------------------------------------------------------------------##
+# Experiment 0
+# All subjects are used for training and testing
+subjects:
+  [
+    '7707',
+    '8801',
+    '8802',
+    '8815',
+    '8820',
+    '8822',
+    '8824',
+    '8828',
+    '8832',
+    '7708',
+    '8819',
+    '8821',
+    '8831',
+    '8823',
+    '8830',
+    '8833',
+    '8803',
+  ]
+# '8826' # not present
+# test_subjects: []
+test_subjects: []
+trials: ['HighFine', 'HighGross', 'LowFine', 'LowGross']
+
+# Path
+logs_path: 'logs/'
+raw_data:
+  raw_eeg_path: 'data/raw/raw_eeg_dataset.h5'
+  raw_robot_path: 'data/raw/raw_robot_dataset.h5'
+external_data: 'data/external/'
+interim_data:
+  eeg_epoch_path: 'data/interim/epoch_eeg_dataset.h5'
+  robot_epoch_path: 'data/interim/epoch_robot_dataset.h5'
+processed_data:
+  clean_eeg_path: 'data/processed/clean_eeg_epochs.h5'
+  clean_eeg_matlab_path: 'data/processed/clean_eeg_matlab_epochs.h5'
+  psd_features_path: 'data/processed/psd_features_dataset.h5'
+  z_score_psd_power_path: 'data/processed/z_score_psd_power_dataset.csv'
+  eeg_epochs_path: 'data/processed/eeg_epochs_dataset.h5'
+  eeg_band_epochs_path: 'data/processed/eeg_band_epochs_dataset.h5'
+  eeg_epochs_ir_path: 'data/processed/eeg_epochs_ir_dataset.h5'
+  eeg_epochs_ir_matlab_path: 'data/processed/eeg_epochs_ir_matlab_dataset.h5'
+  ig_attr_classify_path: 'data/processed/ig_attributes_classify_dataset.h5'
+  weighted_eeg_band_epochs_path: 'data/processed/weighted_eeg_band_epochs_dataset.h5'
+  albation_attr_classify_path: 'data/processed/albation_attributes_classify_dataset.h5'
+  ig_attr_regress_path: 'data/processed/ig_attributes_regress_dataset.h5'
+  weighted_eeg_band_epochs_reg_path: 'data/processed/weighted_eeg_band_epochs_reg_dataset.h5'
+  albation_attr_regress_path: 'data/processed/albation_attributes_regerss_dataset.h5'
+##---------------------------------------------------------------------##

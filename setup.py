@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='Integration of Integrated gradient methods with Multiple Weighted ICA algorithm',
+    description='Brain connectivity analysis during tactical decisions in Human-Swarm Interaction',
     author='Hemanth Manjunatha',
     license='MIT',
 )

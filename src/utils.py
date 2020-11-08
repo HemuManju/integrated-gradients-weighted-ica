@@ -22,16 +22,16 @@ def skip_run(flag, f):
     """
     @contextmanager
     def check_active():
-        deactivated = ['skip']
+        activated = ['run']
         p = ColorPrint()  # printing options
-        if flag in deactivated:
-            p.print_skip('{:>12}  {:>2}  {:>12}'.format(
-                'Skipping the block', '|', f))
-            raise SkipWith()
-        else:
+        if flag in activated:
             p.print_run('{:>12}  {:>3}  {:>12}'.format('Running the block',
                                                        '|', f))
             yield
+        else:
+            p.print_skip('{:>12}  {:>2}  {:>12}'.format(
+                'Skipping the block', '|', f))
+            raise SkipWith()
 
     try:
         yield check_active

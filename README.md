@@ -1,7 +1,7 @@
-Explainability_study
+Connectivity
 ==============================
 
-Integration of Integrated gradient methods with Multiple Weighted ICA algorithm
+Brain connectivity analysis during tactical decisions in Human-Swarm Interaction
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

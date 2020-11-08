@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Explainability_study documentation build configuration file, created by
+# Connectivity documentation build configuration file, created by
 # sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -44,7 +44,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Explainability_study'
+project = u'Connectivity'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -166,7 +166,7 @@ html_last_updated_fmt = '%b %d, %Y'
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'explainability-studydoc'
+htmlhelp_basename = 'connectivity-analysisdoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
@@ -184,8 +184,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'explainability-study.tex',
-     u'Explainability_study Documentation',
+    ('index', 'connectivity-analysis.tex',
+     u'Connectivity Documentation',
      u"Hemanth Manjunatha", 'manual'),
 ]
 
@@ -213,8 +213,8 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [('index', 'explainability-study',
-              u'Explainability_study Documentation',
+man_pages = [('index', 'connectivity-analysis',
+              u'Connectivity Documentation',
               [u"Hemanth Manjunatha"], 1)]
 
 # If true, show URL addresses after external links.
@@ -226,10 +226,10 @@ man_pages = [('index', 'explainability-study',
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'explainability-study',
-     u'Explainability_study Documentation',
-     u"Hemanth Manjunatha", 'Explainability_study',
-     'Integration of Integrated gradient methods with Multiple Weighted ICA algorithm', 'Miscellaneous'),
+    ('index', 'connectivity-analysis',
+     u'Connectivity Documentation',
+     u"Hemanth Manjunatha", 'Connectivity',
+     'Brain connectivity analysis during tactical decisions in Human-Swarm Interaction', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

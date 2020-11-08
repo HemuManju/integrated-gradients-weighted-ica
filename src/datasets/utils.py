@@ -1,16 +1,23 @@
 import numpy as np
-import pprint
+from sklearn.model_selection import train_test_split
 
 
-def label_stats(data_iterator):
-    info = {}
-    for key in data_iterator.keys():
-        info[key] = {}
-        labels = data_iterator[key].dataset.labels
-        _, counts = np.unique(labels[:, 0], return_counts=True)
-        info[key]['class_distribution'] = counts / len(labels)
-        info[key]['class_count'] = counts
+def get_train_valid_test_split(targets, config):
+    ids = np.arange(targets.shape[0])
+    if config['VALID_SIZE'] > 0:
+        train_id, test_id, _, _ = train_test_split(
+            ids, ids * 0, test_size=config['TEST_SIZE'] + config['VALID_SIZE'])
+        valid_id, test_id, _, _ = train_test_split(
+            test_id, test_id * 0, test_size=config['TEST_SIZE'])
 
-        # Display the information
-    pprint.pprint(info)
-    return info
+    else:
+        train_id, test_id, _, _ = train_test_split(
+            ids, ids * 0, test_size=config['TEST_SIZE'])
+        valid_id = None
+
+    indices = {}
+    indices['training'] = train_id
+    indices['validation'] = valid_id
+    indices['testing'] = test_id
+
+    return indices

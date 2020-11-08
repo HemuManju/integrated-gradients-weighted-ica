@@ -7,7 +7,7 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
-PROJECT_NAME = explainability-study
+PROJECT_NAME = connectivity-analysis
 PYTHON_INTERPRETER = python3
 
 ifeq (,$(shell which conda))
@@ -101,7 +101,7 @@ test_environment:
 # 	* append hold space (+ newline) to line
 # 	* replace newline plus comments by `---`
 # 	* print line
-# Separate expressions are necessary because labels cannot be delimited by
+# Separate expressions are necessary because targets cannot be delimited by
 # semicolon; see <http://stackoverflow.com/a/11799865/1968>
 .PHONY: help
 help:

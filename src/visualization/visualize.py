@@ -1,54 +1,53 @@
 import numpy as np
-import mne
-
+import deepdish as dd
 import matplotlib.pyplot as plt
 
+from visbrain.objects import TopoObj, SceneObj
 
-def visualize_seperated_epochs(results, V, title):
-    epochs = results['epochs']
-    labels = results['labels']
 
-    non_target = np.empty(epochs.shape)
-    target = np.empty(epochs.shape)
+def plot_ir_index_hist(config):
+    # Read the data
+    read_path = config['processed_data']['eeg_epochs_ir_path']
+    data = dd.io.load(read_path)
+    ir_index = []
+    for subject in config['subjects']:
+        ir_index.append(data[subject]['targets'])
 
-    # Recovered signal
-    for i, epoch in enumerate(epochs):
-        if labels[i] > 0:
-            target[i, :, :] = np.dot(V, epoch)
-        else:
-            non_target[i, :, :] = np.dot(V, epoch)
-
-    # Convert to epoch
-    ch_names = [
-        'Fp1', 'Fp2', 'AFz', 'F7', 'F3', 'F4', 'F8', 'FC5', 'FC1', 'FC2',
-        'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7',
-        'P3', 'Pz', 'P4', 'P8', 'PO7', 'O1', 'Oz', 'O2', 'PO8', 'PO9', 'PO10'
-    ]
-    ch_types = ['eeg'] * 32
-    sfreq = epochs.shape[2]
-    info = mne.create_info(ch_names=ch_names, sfreq=sfreq, ch_types=ch_types)
-    chname2idx = {}
-    for i, chn in enumerate(ch_names):
-        chname2idx[chn] = i
-
-    # Non target and target epochs
-    non_target_epochs = mne.EpochsArray(non_target, info=info, verbose=False)
-    target_epochs = mne.EpochsArray(target, info=info, verbose=False)
-
-    # Evoked plot
+    ir_index = np.concatenate(ir_index, axis=0)
     plt.style.use('clean')
-    fig, ax = plt.subplots(figsize=(12, 4))
-
-    evkTarget = target_epochs.average().data[chname2idx['Cz'], :]
-    evkNonTarget = non_target_epochs.average().data[chname2idx['Cz'], :]
-
-    t = np.arange(len(evkTarget)) / target_epochs.info['sfreq']
-    ax.plot(t, evkTarget, label='Target')
-    ax.plot(t, evkNonTarget, label='NonTarget')
-    ax.legend()
-    ax.set_title(title)
-
-    # # Visualize
-    # mne.viz.plot_epochs_image(target_epochs, picks='Cz', show=False)
-    # mne.viz.plot_epochs_image(non_target_epochs, picks='Cz')
+    plt.hist(ir_index, bins=100)
+    plt.show()
     return None
+
+
+def plot_selected_sensors(features):
+    sc = SceneObj(bgcolor='white', size=(600, 600))
+    # Define some EEG channels and set one data value per channel
+    ch_names = [
+        'Fp1', 'F7', 'F8', 'T4', 'T6', 'T5', 'T3', 'Fp2', 'O1', 'P3', 'Pz',
+        'F3', 'Fz', 'F4', 'C4', 'P4', 'POz', 'C3', 'Cz', 'O2'
+    ]
+    selected_names = [name.split('_')[0] for name in features]
+
+    # Create the topoplot and the associated colorbar
+    kw_top = dict(margin=15 / 100, chan_offset=(0., -0.045, 0.), chan_size=10)
+    t_obj_selected = TopoObj('topo', [1] * len(selected_names),
+                             channels=selected_names,
+                             chan_mark_color='#F19D99',
+                             cmap='Greys',
+                             verbose=False,
+                             **kw_top)
+    sc.add_to_subplot(t_obj_selected,
+                      row=0,
+                      col=0,
+                      title='Selected Channels',
+                      title_color='black',
+                      width_max=600)
+    t_obj = TopoObj('topo', [1] * len(ch_names),
+                    channels=ch_names,
+                    chan_mark_color='#F19D99',
+                    verbose=False,
+                    **kw_top)
+    # Add both objects to the scene
+    sc.add_to_subplot(t_obj, row=0, col=0, width_max=600)
+    sc.preview()
